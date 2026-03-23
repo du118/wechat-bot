@@ -40,10 +40,10 @@ dependencies = [
 ]
 
 [tool.uv]
-# 使用清华镜像作为默认源，替代 pypi.org
-# 清华镜像更稳定，下载速度更快
+# 使用阿里云镜像作为默认源
+# 阿里云镜像更稳定，兼容性更好
 [[tool.uv.index]]
-url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+url = "https://mirrors.aliyun.com/pypi/simple/"
 default = true
 
 # 增加 HTTP 超时时间，防止大文件下载超时
