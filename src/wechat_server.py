@@ -194,9 +194,13 @@ if __name__ == '__main__':
 
     print(f"Token配置：{WECHAT_TOKEN}")
     print(f"AESKey配置：{WECHAT_AESKEY or '未配置'}")
-    print(f"监听地址：0.0.0.0:80")
+
+    # 使用环境变量中的 PORT，默认为 80
+    port = int(os.environ.get('PORT', 80))
+
+    print(f"监听地址：0.0.0.0:{port}")
     print(f"回调地址：https://kdq6mqbnnn.coze.site/stream_run")
     print("\n" + "="*60 + "\n")
 
     # 启动Flask服务器
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)

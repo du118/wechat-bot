@@ -1,2 +1,1 @@
-# 微信云托管启动命令
-web: bash start.sh
+web: gunicorn src.wechat_server:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
