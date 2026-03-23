@@ -11,6 +11,7 @@ from storage.memory.memory_saver import get_memory_saver
 
 # 导入工具
 from tools.web_search_tool import web_search
+from tools.audio_tools import speech_to_text, text_to_speech
 
 LLM_CONFIG = "config/agent_llm_config.json"
 
@@ -56,7 +57,7 @@ def build_agent(ctx=None):
     return create_agent(
         model=llm,
         system_prompt=cfg.get("sp"),
-        tools=[web_search],
+        tools=[web_search, speech_to_text, text_to_speech],
         checkpointer=get_memory_saver(),
         state_schema=AgentState,
     )
