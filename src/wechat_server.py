@@ -14,7 +14,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # 微信公众号配置（需要在微信公众号后台配置的值）
-WECHAT_TOKEN = 'xingtuai2025'  # 你在微信公众号后台填写的Token
+WECHAT_TOKEN = 'xingtuai2026'  # 你在微信公众号后台填写的Token
 WECHAT_AESKEY = ''  # 你的EncodingAESKey，如果生成了请填写
 
 app = Flask(__name__)
