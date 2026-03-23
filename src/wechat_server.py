@@ -172,7 +172,29 @@ def get_ai_response(user_message, user_id):
             config={"configurable": {"thread_id": user_id}}
         )
 
-        reply = response.content
+        print(f"\n{'='*50}")
+        print(f"响应类型：{type(response)}")
+        print(f"响应内容：{response}")
+        print(f"{'='*50}\n")
+
+        # 提取 AI 回复
+        # LangGraph 返回的是 State 对象，需要从 messages 中提取 AI 的回复
+        if hasattr(response, 'messages') and len(response.messages) > 0:
+            # 获取最后一条 AI 回复消息
+            from langchain_core.messages import AIMessage
+            ai_messages = [msg for msg in response.messages if isinstance(msg, AIMessage)]
+
+            if ai_messages:
+                # 获取最后一条 AI 消息
+                reply = ai_messages[-1].content
+            else:
+                # 如果没有 AI 消息，获取最后一条消息
+                reply = response.messages[-1].content
+        elif hasattr(response, 'content'):
+            reply = response.content
+        else:
+            reply = str(response)
+
         print(f"\n{'='*50}")
         print(f"AI助手回复：{reply}")
         print(f"{'='*50}\n")
