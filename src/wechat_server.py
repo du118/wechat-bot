@@ -23,7 +23,7 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 # 微信公众号配置（需要在微信公众号后台配置的值）
-WECHAT_TOKEN = 'xingtuai2026'  # 你在微信公众号后台填写的Token
+WECHAT_TOKEN = 'xingtulai2026'  # 你在微信公众号后台填写的Token
 WECHAT_AESKEY = ''  # 你的EncodingAESKey，如果生成了请填写
 
 app = Flask(__name__)
