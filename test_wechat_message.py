@@ -1,129 +1,101 @@
 #!/usr/bin/env python3
 """
-测试微信消息收发
+测试微信公众号消息处理功能
 """
 
 import requests
-import time
+from datetime import datetime
 
-SERVER_URL = 'http://127.0.0.1:80/stream_run'
+print("="*60)
+print("微信公众号消息处理测试")
+print("="*60)
 
-def generate_xml_message(from_user, to_user, content):
-    """生成微信消息 XML"""
-    create_time = str(int(time.time()))
-    xml = f"""<xml>
-<ToUserName><![CDATA[{to_user}]]></ToUserName>
-<FromUserName><![CDATA[{from_user}]]></FromUserName>
-<CreateTime>{create_time}</CreateTime>
+# 微信云托管 URL
+callback_url = "https://flask-enou-237504-9-1414979075.sh.run.tcloudbase.com/stream_run"
+
+# 模拟微信消息 XML
+wechat_message_xml = """<xml>
+<ToUserName><![CDATA[gh_test123]]></ToUserName>
+<FromUserName><![CDATA[ouser123]]></FromUserName>
+<CreateTime>1742785482</CreateTime>
 <MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[{content}]]></Content>
-</xml>"""
-    return xml
-
-def test_text_message():
-    """测试文本消息"""
-    print("="*60)
-    print("测试文本消息")
-    print("="*60)
-
-    from_user = 'o1234567890'  # 用户 openid
-    to_user = 'gh_test123'     # 公众号原始ID
-    content = '你好'            # 用户消息
-
-    xml_data = generate_xml_message(from_user, to_user, content)
-
-    print(f"\n发送消息：")
-    print(f"  FromUser: {from_user}")
-    print(f"  ToUser: {to_user}")
-    print(f"  Content: {content}")
-
-    print(f"\nXML 数据：")
-    print(xml_data)
-
-    try:
-        response = requests.post(
-            SERVER_URL,
-            data=xml_data.encode('utf-8'),
-            headers={'Content-Type': 'application/xml'},
-            timeout=30  # 增加超时时间，AI可能需要更长时间
-        )
-
-        print(f"\n响应状态码：{response.status_code}")
-        print(f"响应内容：")
-        print(response.text)
-
-        if response.status_code == 200:
-            print("\n✅ 消息发送成功！")
-            return True
-        else:
-            print("\n❌ 消息发送失败！")
-            return False
-
-    except requests.exceptions.Timeout:
-        print("\n⚠️ 请求超时（AI处理可能需要更长时间）")
-        return False
-    except Exception as e:
-        print(f"\n❌ 请求失败：{e}")
-        return False
-
-def test_image_message():
-    """测试图片消息"""
-    print("\n" + "="*60)
-    print("测试图片消息")
-    print("="*60)
-
-    from_user = 'o1234567890'
-    to_user = 'gh_test123'
-    create_time = str(int(time.time()))
-
-    xml_data = f"""<xml>
-<ToUserName><![CDATA[{to_user}]]></ToUserName>
-<FromUserName><![CDATA[{from_user}]]></FromUserName>
-<CreateTime>{create_time}</CreateTime>
-<MsgType><![CDATA[image]]></MsgType>
-<PicUrl><![CDATA[http://example.com/image.jpg]]></PicUrl>
-<MediaId><![CDATA[media_id_12345]]></MediaId>
+<Content><![CDATA[你好]]></Content>
+<MsgId>1234567890123456</MsgId>
 </xml>"""
 
-    print(f"\n发送图片消息")
+print(f"\n测试 URL: {callback_url}")
+print(f"\n模拟消息: 你好")
+print(f"消息类型: text\n")
 
-    try:
-        response = requests.post(
-            SERVER_URL,
-            data=xml_data.encode('utf-8'),
-            headers={'Content-Type': 'application/xml'},
-            timeout=30
-        )
+# 发送 POST 请求
+print("正在发送 POST 请求...\n")
 
-        print(f"\n响应状态码：{response.status_code}")
-        print(f"响应内容：")
-        print(response.text)
+try:
+    response = requests.post(
+        callback_url,
+        data=wechat_message_xml.encode('utf-8'),
+        headers={'Content-Type': 'application/xml'},
+        timeout=30
+    )
 
-        if response.status_code == 200:
-            print("\n✅ 图片消息处理成功！")
-            return True
+    print(f"响应状态码: {response.status_code}")
+    print(f"\n响应内容:\n{response.text}\n")
+
+    # 验证结果
+    if response.status_code == 200:
+        # 检查是否返回 XML 格式的回复
+        if '<xml>' in response.text:
+            print(f"{'='*60}")
+            print("✅ 消息处理成功！AI 正常回复！")
+            print(f"{'='*60}\n")
+
+            # 尝试提取回复内容
+            try:
+                import xml.etree.ElementTree as ET
+                root = ET.fromstring(response.text)
+                reply_content = root.find('Content').text
+                print(f"AI 回复内容:\n{reply_content}\n")
+            except:
+                pass
+
+            print("结论：微信公众号和微信云托管已成功连接！")
+            print("现在可以在微信公众号中发送消息进行测试。")
+            exit(0)
         else:
-            print("\n❌ 图片消息处理失败！")
-            return False
+            print(f"{'='*60}")
+            print("⚠️ 返回内容格式异常")
+            print(f"{'='*60}\n")
+            print(f"返回内容: {response.text}")
+            exit(1)
+    else:
+        print(f"{'='*60}")
+        print(f"❌ 请求失败！状态码: {response.status_code}")
+        print(f"{'='*60}\n")
+        print(f"响应内容: {response.text}")
+        exit(1)
 
-    except Exception as e:
-        print(f"\n❌ 请求失败：{e}")
-        return False
+except requests.exceptions.Timeout:
+    print(f"{'='*60}")
+    print("❌ 请求超时！")
+    print(f"{'='*60}\n")
+    print("可能的原因：")
+    print("1. AI 响应时间过长")
+    print("2. 网络连接问题")
+    print("3. 服务正在处理中")
+    exit(1)
 
-if __name__ == '__main__':
-    print("\n" + "="*60)
-    print("开始测试微信消息收发")
-    print("="*60 + "\n")
+except requests.exceptions.ConnectionError as e:
+    print(f"{'='*60}")
+    print("❌ 连接失败！")
+    print(f"{'='*60}\n")
+    print(f"错误信息: {e}")
+    exit(1)
 
-    # 测试文本消息
-    test_text_message()
-
-    # 等待一下
-    time.sleep(2)
-
-    # 测试图片消息
-    test_image_message()
-
-    print("\n" + "="*60)
-    print("测试完成！")
-    print("="*60)
+except Exception as e:
+    print(f"{'='*60}")
+    print("❌ 测试失败！")
+    print(f"{'='*60}\n")
+    print(f"错误信息: {e}")
+    import traceback
+    traceback.print_exc()
+    exit(1)

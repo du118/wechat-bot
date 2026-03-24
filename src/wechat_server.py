@@ -11,7 +11,16 @@ import os
 import sys
 
 # 添加项目路径到Python路径
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 确保 src 目录可以被正确导入
+current_file = os.path.abspath(__file__)
+current_dir = os.path.dirname(current_file)
+project_root = os.path.dirname(current_dir)
+
+# 添加项目根目录和 src 目录到路径
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 # 微信公众号配置（需要在微信公众号后台配置的值）
 WECHAT_TOKEN = 'xingtuai2026'  # 你在微信公众号后台填写的Token
