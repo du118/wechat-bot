@@ -169,7 +169,7 @@ def get_ai_response(user_message, user_id):
         print(f"{'='*50}\n")
 
         # 导入Agent
-        from agents.agent import build_agent
+        from src.agents.agent import build_agent
         from langchain_core.messages import HumanMessage
 
         # 构建Agent实例
