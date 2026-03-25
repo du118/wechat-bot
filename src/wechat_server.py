@@ -28,6 +28,7 @@ WECHAT_AESKEY = ''  # 你的EncodingAESKey，如果生成了请填写
 
 app = Flask(__name__)
 
+@app.route('/wechat', methods=['GET', 'POST'])
 @app.route('/stream_run', methods=['GET', 'POST'])
 def wechat_callback():
     """微信公众号回调接口"""
@@ -230,7 +231,8 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 80))
 
     print(f"监听地址：0.0.0.0:{port}")
-    print(f"回调地址：https://kdq6mqbnnn.coze.site/stream_run")
+    print(f"回调地址：https://<微信云托管服务地址>/wechat")
+    print(f"备用地址：https://<微信云托管服务地址>/stream_run")
     print("\n" + "="*60 + "\n")
 
     # 启动Flask服务器
